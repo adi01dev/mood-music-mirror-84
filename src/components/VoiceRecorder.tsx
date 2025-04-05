@@ -18,6 +18,7 @@ const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [audioVolume, setAudioVolume] = useState(0);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -78,6 +79,7 @@ const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        setAudioBlob(audioBlob);
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
         onRecordingComplete(url);

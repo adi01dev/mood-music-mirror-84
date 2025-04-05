@@ -1,5 +1,7 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from "sonner";
+import { fetchYouTubeVideos, fetchSpotifyPlaylists } from "@/lib/api";
 
 // Define types
 export type MoodEntry = {
@@ -332,23 +334,81 @@ export const MoodProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       // In a real app, this would send the audio to an API for analysis
-      // For demonstration, we'll return a randomized analysis
+      // We'll simulate AI analysis with a more sophisticated approach
       
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const moodCategories: MoodEntry['moodCategory'][] = ['happy', 'calm', 'sad', 'anxious', 'angry', 'neutral'];
-      const randomMoodCategory = moodCategories[Math.floor(Math.random() * moodCategories.length)];
+      // Simulated AI analysis results
+      // In a real implementation, this would call an AI API like OpenAI or AssemblyAI
+      const simulateAIAnalysis = () => {
+        // Weighted random to make some moods more likely in certain situations
+        const moodWeights = {
+          happy: 0.2,
+          calm: 0.2, 
+          sad: 0.2,
+          anxious: 0.15,
+          angry: 0.1,
+          neutral: 0.15
+        };
+        
+        // Select mood based on weighted probability
+        const random = Math.random();
+        let cumulativeProbability = 0;
+        let selectedMood: MoodEntry['moodCategory'] = 'neutral';
+        
+        for (const [mood, probability] of Object.entries(moodWeights)) {
+          cumulativeProbability += probability;
+          if (random <= cumulativeProbability) {
+            selectedMood = mood as MoodEntry['moodCategory'];
+            break;
+          }
+        }
+        
+        // Generate random score that aligns with the mood
+        let randomScore: number;
+        switch (selectedMood) {
+          case 'happy': 
+            randomScore = Math.floor(Math.random() * 3) + 8; // 8-10
+            break;
+          case 'calm': 
+            randomScore = Math.floor(Math.random() * 3) + 7; // 7-9
+            break;
+          case 'neutral': 
+            randomScore = Math.floor(Math.random() * 3) + 5; // 5-7
+            break;
+          case 'anxious': 
+            randomScore = Math.floor(Math.random() * 3) + 3; // 3-5
+            break;
+          case 'sad': 
+            randomScore = Math.floor(Math.random() * 3) + 2; // 2-4
+            break;
+          case 'angry': 
+            randomScore = Math.floor(Math.random() * 3) + 2; // 2-4
+            break;
+          default: 
+            randomScore = Math.floor(Math.random() * 10) + 1;
+        }
+        
+        return {
+          moodCategory: selectedMood,
+          moodScore: randomScore,
+        };
+      };
       
-      const randomScore = Math.floor(Math.random() * 10) + 1;
+      const { moodCategory, moodScore } = simulateAIAnalysis();
       
       const analysisResult: Partial<MoodEntry> = {
-        moodCategory: randomMoodCategory,
-        moodScore: randomScore,
+        moodCategory,
+        moodScore,
         analysis: {
-          sentiment: randomScore > 5 ? 'positive' : randomScore < 5 ? 'negative' : 'neutral',
-          stress: Math.floor(Math.random() * 10) + 1,
-          energy: Math.floor(Math.random() * 10) + 1,
-          dominantEmotion: getEmotionForMood(randomMoodCategory),
+          sentiment: moodScore > 6 ? 'positive' : moodScore < 5 ? 'negative' : 'neutral',
+          stress: moodCategory === 'anxious' || moodCategory === 'angry' ? 
+            Math.floor(Math.random() * 3) + 7 : // 7-9 for high stress moods
+            Math.floor(Math.random() * 7) + 1,  // 1-7 for others
+          energy: moodCategory === 'happy' || moodCategory === 'angry' ? 
+            Math.floor(Math.random() * 3) + 7 : // 7-9 for high energy moods
+            Math.floor(Math.random() * 7) + 1,  // 1-7 for others
+          dominantEmotion: getEmotionForMood(moodCategory),
         },
       };
       
@@ -376,16 +436,63 @@ export const MoodProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return emotions[Math.floor(Math.random() * emotions.length)];
   };
 
-  const getRecommendations = (mood: MoodEntry['moodCategory']) => {
+  const getRecommendations = async (mood: MoodEntry['moodCategory']) => {
     setIsLoading(true);
     
     try {
-      // For demonstration, we'll use mock recommendations
-      const recommendationsForMood = mockRecommendations[mood];
-      setRecommendations(recommendationsForMood);
+      // In a real app, this would make API calls to YouTube and Spotify
+      // For now, we'll use a mix of mock data and simulated API responses
+      
+      // Start with existing mock recommendations
+      let moodRecommendations = [...mockRecommendations[mood]];
+      
+      try {
+        // Simulate fetching YouTube videos
+        const youtubeVideos = await fetchYouTubeVideos(mood);
+        if (youtubeVideos && youtubeVideos.length > 0) {
+          // Add YouTube recommendations
+          moodRecommendations = [
+            ...moodRecommendations,
+            ...youtubeVideos.map((video, index) => ({
+              id: `yt-${mood}-${index}`,
+              type: 'video' as const,
+              title: video.title,
+              description: video.description,
+              url: video.url,
+              thumbnail: video.thumbnail,
+              moodCategory: mood
+            }))
+          ];
+        }
+        
+        // Simulate fetching Spotify playlists
+        const spotifyPlaylists = await fetchSpotifyPlaylists(mood);
+        if (spotifyPlaylists && spotifyPlaylists.length > 0) {
+          // Add Spotify recommendations
+          moodRecommendations = [
+            ...moodRecommendations,
+            ...spotifyPlaylists.map((playlist, index) => ({
+              id: `sp-${mood}-${index}`,
+              type: 'music' as const,
+              title: playlist.title,
+              description: playlist.description,
+              url: playlist.url,
+              thumbnail: playlist.thumbnail,
+              moodCategory: mood
+            }))
+          ];
+        }
+      } catch (apiError) {
+        console.error('Error fetching external recommendations:', apiError);
+        // Continue with mock data if API calls fail
+      }
+      
+      setRecommendations(moodRecommendations);
     } catch (error) {
       console.error('Error fetching recommendations:', error);
       toast.error('Failed to load recommendations.');
+      // Fallback to mock data
+      setRecommendations(mockRecommendations[mood]);
     } finally {
       setIsLoading(false);
     }
