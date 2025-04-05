@@ -56,7 +56,7 @@ const mockRecommendations: Record<MoodEntry['moodCategory'], Recommendation[]> =
       id: '2',
       type: 'activity',
       title: 'Gratitude Journaling',
-      description: 'Write down three things you're grateful for today',
+      description: "Write down three things you're grateful for today",
       url: '#',
       moodCategory: 'happy'
     }
