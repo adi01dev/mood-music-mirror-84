@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from "sonner";
 
@@ -51,7 +50,7 @@ const mockRecommendations: Record<MoodEntry['moodCategory'], Recommendation[]> =
       description: 'Upbeat songs to maintain your happy mood',
       url: 'https://open.spotify.com/playlist/37i9dQZF1DX3rxVfibe1L0',
       thumbnail: 'https://i.scdn.co/image/ab67706f00000002e4eadd417a05b2546e866934',
-      moodCategory: 'happy',
+      moodCategory: 'happy'
     },
     {
       id: '2',
@@ -59,8 +58,8 @@ const mockRecommendations: Record<MoodEntry['moodCategory'], Recommendation[]> =
       title: 'Gratitude Journaling',
       description: 'Write down three things you're grateful for today',
       url: '#',
-      moodCategory: 'happy',
-    },
+      moodCategory: 'happy'
+    }
   ],
   calm: [
     {
@@ -80,7 +79,7 @@ const mockRecommendations: Record<MoodEntry['moodCategory'], Recommendation[]> =
       url: 'https://www.youtube.com/watch?v=oWTVEm7LCxc',
       thumbnail: 'https://img.youtube.com/vi/oWTVEm7LCxc/hqdefault.jpg',
       moodCategory: 'calm',
-    },
+    }
   ],
   sad: [
     {
@@ -99,7 +98,7 @@ const mockRecommendations: Record<MoodEntry['moodCategory'], Recommendation[]> =
       description: 'Take a 20-minute walk focusing on your surroundings',
       url: '#',
       moodCategory: 'sad',
-    },
+    }
   ],
   anxious: [
     {
@@ -119,7 +118,7 @@ const mockRecommendations: Record<MoodEntry['moodCategory'], Recommendation[]> =
       url: 'https://www.youtube.com/watch?v=tEmt1Znux58',
       thumbnail: 'https://img.youtube.com/vi/tEmt1Znux58/hqdefault.jpg',
       moodCategory: 'anxious',
-    },
+    }
   ],
   angry: [
     {
@@ -138,7 +137,7 @@ const mockRecommendations: Record<MoodEntry['moodCategory'], Recommendation[]> =
       description: '10-minute progressive muscle relaxation technique',
       url: '#',
       moodCategory: 'angry',
-    },
+    }
   ],
   neutral: [
     {
@@ -157,8 +156,8 @@ const mockRecommendations: Record<MoodEntry['moodCategory'], Recommendation[]> =
       description: 'Introduction to mindfulness practices for everyday life',
       url: '#',
       moodCategory: 'neutral',
-    },
-  ],
+    }
+  ]
 };
 
 // Mock mood history data
