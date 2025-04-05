@@ -1,7 +1,7 @@
 
 const express = require('express');
 const multer = require('multer');
-const { convertSpeechToText } = require('../controllers/voiceController');
+const { convertSpeechToText, analyzeVoice } = require('../controllers/voiceController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -16,5 +16,6 @@ const upload = multer({
 router.use(protect);
 
 router.post('/transcribe', upload.single('audio'), convertSpeechToText);
+router.post('/analyze', upload.single('audio'), analyzeVoice);
 
 module.exports = router;

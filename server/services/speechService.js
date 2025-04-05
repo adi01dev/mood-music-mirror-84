@@ -1,8 +1,11 @@
 
 const { Readable } = require('stream');
 const { SpeechClient } = require('@google-cloud/speech');
+const axios = require('axios');
+const fs = require('fs');
+const FormData = require('form-data');
 
-// Creates a client
+// Creates a Google Cloud Speech client
 const speechClient = new SpeechClient();
 
 /**
@@ -39,6 +42,44 @@ exports.speechToText = async (audioBuffer) => {
   } catch (error) {
     console.error('Error in speech to text conversion:', error);
     throw new Error('Failed to convert speech to text');
+  }
+};
+
+/**
+ * Convert speech audio to text using OpenAI Whisper API
+ * @param {Buffer} audioBuffer - Audio file buffer
+ * @returns {string} - Transcribed text
+ */
+exports.speechToTextWhisper = async (audioBuffer) => {
+  try {
+    // Create a temporary file to send to OpenAI API
+    const tempFilePath = `/tmp/audio-${Date.now()}.wav`;
+    fs.writeFileSync(tempFilePath, audioBuffer);
+    
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(tempFilePath), {
+      filename: 'audio.wav',
+      contentType: 'audio/wav',
+    });
+    formData.append('model', 'whisper-1');
+    
+    const response = await axios.post('https://api.openai.com/v1/audio/transcriptions', 
+      formData, 
+      {
+        headers: {
+          ...formData.getHeaders(),
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+      }
+    );
+    
+    // Clean up temp file
+    fs.unlinkSync(tempFilePath);
+    
+    return response.data.text;
+  } catch (error) {
+    console.error('Error in Whisper speech to text conversion:', error);
+    throw new Error('Failed to convert speech to text with Whisper');
   }
 };
 

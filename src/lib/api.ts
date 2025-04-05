@@ -1,4 +1,3 @@
-
 // This file simulates API calls to external services
 // In a production environment, these would be actual API calls to backend services
 
@@ -331,37 +330,32 @@ export const analyzeText = async (text: string): Promise<{
   let energy = 5;
   let sentiment = 'neutral';
   
-  switch (detectedMood) {
-    case 'happy':
-      stress = Math.floor(Math.random() * 3) + 1; // 1-3
-      energy = Math.floor(Math.random() * 3) + 7; // 7-9
-      sentiment = 'positive';
-      break;
-    case 'calm':
-      stress = Math.floor(Math.random() * 3) + 1; // 1-3
-      energy = Math.floor(Math.random() * 3) + 3; // 3-5
-      sentiment = 'positive';
-      break;
-    case 'sad':
-      stress = Math.floor(Math.random() * 3) + 5; // 5-7
-      energy = Math.floor(Math.random() * 3) + 1; // 1-3
-      sentiment = 'negative';
-      break;
-    case 'anxious':
-      stress = Math.floor(Math.random() * 3) + 7; // 7-9
-      energy = Math.floor(Math.random() * 5) + 5; // 5-9
-      sentiment = 'negative';
-      break;
-    case 'angry':
-      stress = Math.floor(Math.random() * 3) + 7; // 7-9
-      energy = Math.floor(Math.random() * 3) + 7; // 7-9
-      sentiment = 'negative';
-      break;
-    case 'neutral':
-      stress = Math.floor(Math.random() * 5) + 3; // 3-7
-      energy = Math.floor(Math.random() * 5) + 3; // 3-7
-      sentiment = 'neutral';
-      break;
+  // Use if statements instead of switch/case with the string-type comparison
+  if (detectedMood === 'happy') {
+    stress = Math.floor(Math.random() * 3) + 1; // 1-3
+    energy = Math.floor(Math.random() * 3) + 7; // 7-9
+    sentiment = 'positive';
+  } else if (detectedMood === 'calm') {
+    stress = Math.floor(Math.random() * 3) + 1; // 1-3
+    energy = Math.floor(Math.random() * 3) + 3; // 3-5
+    sentiment = 'positive';
+  } else if (detectedMood === 'sad') {
+    stress = Math.floor(Math.random() * 3) + 5; // 5-7
+    energy = Math.floor(Math.random() * 3) + 1; // 1-3
+    sentiment = 'negative';
+  } else if (detectedMood === 'anxious') {
+    stress = Math.floor(Math.random() * 3) + 7; // 7-9
+    energy = Math.floor(Math.random() * 5) + 5; // 5-9
+    sentiment = 'negative';
+  } else if (detectedMood === 'angry') {
+    stress = Math.floor(Math.random() * 3) + 7; // 7-9
+    energy = Math.floor(Math.random() * 3) + 7; // 7-9
+    sentiment = 'negative';
+  } else {
+    // neutral
+    stress = Math.floor(Math.random() * 5) + 3; // 3-7
+    energy = Math.floor(Math.random() * 5) + 3; // 3-7
+    sentiment = 'neutral';
   }
   
   const dominantEmotion = emotions[detectedMood][Math.floor(Math.random() * emotions[detectedMood].length)];
